@@ -1,3 +1,15 @@
+
 body {
-    background-color: rgb(71, 70, 76);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background-color: rgb(71, 70, 76);
+}
+
+#map {
+  position: relative;
+  width: 900px;
+  height: 800px;
 }
