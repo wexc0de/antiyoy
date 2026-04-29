@@ -3,6 +3,32 @@ async function getData() {
   const state = await response.json();
   const map = document.getElementById('map');
 
+const player = state.players[0];
+
+const money = state.money;
+const income = state.income;
+const upkeep = state.upkeep;
+const turn = state.turn;
+const currentPlayer = state.current_player;
+
+const infopanel = document.getElementById('info-panel');
+infopanel.innerHTML = ` 
+  <div class="stat">
+    <span class="stat-label">Turn</span>
+    <span class="stat-value">${turn}</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Player</span>
+    <span class="stat-value">${currentPlayer}</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Money</span>
+    <span class="stat-value">${money}</span>
+  </div>
+`
+
+map.innerHTML = '';
+
   for (const hex of state.map) {
     if (hex.type === 'impassable') continue;
 
@@ -18,7 +44,7 @@ async function getData() {
 
     // building overlay 
     if (hex.building_image !== null) {
-      const buildingImg = document.createElement('img');
+     const buildingImg = document.createElement('img');
       buildingImg.src = 'https://tinkr.tech' + hex.building_image;
       buildingImg.style.position = 'absolute';
       buildingImg.style.left = hex.x + 'px';
