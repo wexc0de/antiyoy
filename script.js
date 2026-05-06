@@ -1,18 +1,25 @@
+const DB = "https://tinkr.tech/sdb/denni_antiyoy/antiyoy";
+const BASE = "https://tinkr.tech";
+
 async function getData() {
   const response = await fetch('https://tinkr.tech/sdb/denni_antiyoy/antiyoy');
   const state = await response.json();
   const map = document.getElementById('map');
 
-const player = state.players[0];
+const player = state.players[0] ?? "-";
 
 const money = state.money;
 const income = state.income;
 const upkeep = state.upkeep;
 const turn = state.turn;
-const currentPlayer = state.current_player;
+const currentPlayer = state.current_player ?? "-";
 
 const infopanel = document.getElementById('info-panel');
 infopanel.innerHTML = ` 
+  <div class="state">
+    <span class="stat-label">Nickname</span>
+    <span class="stat-value">${player}</span>
+  </div>
   <div class="stat">
     <span class="stat-label">Turn</span>
     <span class="stat-value">${turn}</span>
@@ -76,7 +83,7 @@ setInterval(getData, 1500);
 async function login() {
   const userLogin = prompt("Enter your login:");
 
-  const res = await fetch('https://tinkr.tech/sdb/denni_antiyoy/antiyoy', {
+   const res = await fetch(DB, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -88,8 +95,8 @@ async function login() {
   const data = await res.json();
 
   if (data.player_key) {
-    localStorage.setItem("player_key", data.player_key);
-    localStorage.setItem("login", userLogin);
+    sessionStorage.setItem("player_key", data.player_key);
+    sessionStorage.setItem("login", userLogin);
     alert("Joined!");
   } else {
     alert(data.error);
