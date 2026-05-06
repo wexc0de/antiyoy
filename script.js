@@ -70,3 +70,28 @@ map.innerHTML = '';
 
 getData();
 setInterval(getData, 1500);
+
+
+// join
+async function login() {
+  const userLogin = prompt("Enter your login:");
+
+  const res = await fetch('https://tinkr.tech/sdb/denni_antiyoy/antiyoy', {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "join",
+      login: userLogin
+    })
+  });
+
+  const data = await res.json();
+
+  if (data.player_key) {
+    localStorage.setItem("player_key", data.player_key);
+    localStorage.setItem("login", userLogin);
+    alert("Joined!");
+  } else {
+    alert(data.error);
+  }
+}
