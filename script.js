@@ -1,5 +1,5 @@
-const DB = "https://tinkr.tech/sdb/denni_antiyoy/antiyoy";
-const BASE = "https://tinkr.tech";
+const db = "tinkr.tech/sdb/denni_antiyoy/antiyoy";
+const base = "https://tinkr.tech";
 
 async function getData() {
   const response = await fetch('https://tinkr.tech/sdb/denni_antiyoy/antiyoy');
@@ -16,7 +16,7 @@ const currentPlayer = state.current_player ?? "-";
 
 const infopanel = document.getElementById('info-panel');
 infopanel.innerHTML = ` 
-  <div class="state">
+  <div class="stat">
     <span class="stat-label">Nickname</span>
     <span class="stat-value">${player}</span>
   </div>
@@ -83,7 +83,7 @@ setInterval(getData, 1500);
 async function login() {
   const userLogin = prompt("Enter your login:");
 
-   const res = await fetch(DB, {
+   const res = await fetch(db, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -101,4 +101,13 @@ async function login() {
   } else {
     alert(data.error);
   }
+}
+
+//start
+async function start() {
+  await fetch(db, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({action: "start"})   
+  });
 }
