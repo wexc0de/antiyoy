@@ -13,10 +13,16 @@
 <div id="movment">
     <button onclick="login()">Join</button>
     <button onclick="start()">Start</button>
-    <button class="endturn-btn">End Turn</button>
-    <button class="surrend-btn">Surrend</button>
+    <button class="endturn-btn" onclick="endTurn()">End Turn</button>
+    <button class="surrend-btn" onclick="surrender()">Surrender</button>
 </div>
+
+<div id="move-hint">
+  Click a hex with your unit, then click where to move
+</div>
+
 <div id="map"></div>
- <script src="script.js"></script>
+
+<script src="script.js"></script>
 </body>
 </html>

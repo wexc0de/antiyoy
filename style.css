@@ -50,3 +50,14 @@ h2 {
   font-size: 22px;
   font-weight: bold;
 }
+
+#move-hint {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #aaa;
+
+}
+
+#map {
+  position: relative;
+}
