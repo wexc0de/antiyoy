@@ -1,3 +1,5 @@
+// <div id="move-hint"> Click a hex with your unit, then click where to move </div>
+
 const db = "https://tinkr.tech/sdb/denni_antiyoy/antiyoy";
 
 let selectedHex = null;
@@ -110,8 +112,7 @@ function onHexClick(hex) {
     const to = { col: hex.col, row: hex.row };
     selectedHex = null;
 
-    if (from.col === to.col && from.row === to.row) {
-      // same hex clicked
+    if (from.col === to.col && from.row === to.row) { //same hex clcked
       getData();
       return;
     }
@@ -199,7 +200,7 @@ async function endTurn() {
   });
 
   const data = await res.json();
-  if (!data.ok) alert(data.error ?? "error ending turn");
+  if (!data.ok) alert(data.error ?? "error");
   getData();
 }
 
@@ -222,6 +223,18 @@ async function surrender() {
   const data = await res.json();
   if (!data.ok) alert(data.error);
   getData();
+}
+
+//buy 
+async function buy(type, hex) {
+  const player_key = sessionStorage.getItem('player_key')
+
+  if (!player_key) return;
+  if (currentPlayer !== userLogin) return;
+
+  const res = fetch(db, {
+    
+  })
 }
 
 getData();

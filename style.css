@@ -14,9 +14,9 @@ body {
 }
 
 h2 {
-  font-size: 75px;
+  font-size: 85px;
   color: white;
-  margin: 50px 0 85px 0;
+  margin: 50px 0 40px 0;
   text-align: center;
 }
 
@@ -24,8 +24,7 @@ h2 {
   display: flex;
   gap: 30px;
   background: rgba(0,0,0,0.3);
-  border-radius: 12px;
-  padding: 15px 30px;
+  padding: 20px 35px;
   margin-bottom: 30px;
   color: white;
   font-size: 18px;
@@ -58,6 +57,7 @@ h2 {
 
 }
 
-#map {
-  position: relative;
+button {
+  font-size: 18px;
+  margin: 0 0 12px 0;
 }
