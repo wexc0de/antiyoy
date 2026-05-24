@@ -10,6 +10,7 @@
 
 <h2>Antiyoy</h2>
 <div id="info-panel"></div>
+
 <div id="movment">
     <button onclick="login()">Join</button>
     <button onclick="start()">Start</button>
@@ -17,14 +18,16 @@
     <button onclick="surrender()">Surrender</button>
 </div>
 
-<div id="map"></div>
-
 <div class="units">
-    <button>Peasant</button>
-    <button>Spearman</button>
-    <button>Baron</button>
-    <button>Knight</button>
+    <button onclick="selectedHex='BUY_PEASANT'">Peasant (10)</button>
+    <button onclick="selectedHex='BUY_SPEARMAN'">Spearman (20)</button>
+    <button onclick="selectedHex='BUY_KNIGHT'">Knight (40)</button>
+    <button onclick="selectedHex='BUY_FARM'">Farm (12)</button>
+    <button onclick="selectedHex='BUY_TOWER'">Tower (15)</button>
+    <button onclick="selectedHex='BUY_FORTRESS'">Fortress (35)</button>
 </div>
+
+<div id="map"></div>
 
 <script src="script.js"></script>
 </body>

@@ -1,20 +1,19 @@
-// <div id="move-hint"> Click a hex with your unit, then click where to move </div>
-
 const db = "https://tinkr.tech/sdb/denni_antiyoy/antiyoy";
 
-let selectedHex = null;
+let selectedHex = null; // либо {col, row}, либо 'BUY_PEASANT' и т.д.
 
 async function getData() {
   const response = await fetch(db);
   const state = await response.json();
   const map = document.getElementById('map');
 
-  const player = state.players?.[0] ?? "-";
-  const money = state.money ?? "-";
-  const income = state.income ?? "-";
-  const upkeep = state.upkeep ?? "-";
   const turn = state.turn ?? "-";
   const currentPlayer = state.current_player ?? "-";
+  window._currentPlayer = currentPlayer;
+
+  // деньги лежат в объекте игрока
+  const playerObj = state.players?.find(p => p.username === currentPlayer);
+  const money = playerObj?.money ?? state.money ?? "-";
 
   const infopanel = document.getElementById('info-panel');
   infopanel.innerHTML = `
@@ -37,7 +36,6 @@ async function getData() {
   for (const hex of state.map) {
     if (hex.type === 'impassable') continue;
 
-    // div for hex click
     const hexWrapper = document.createElement('div');
     hexWrapper.style.position = 'absolute';
     hexWrapper.style.left = hex.x + 'px';
@@ -45,12 +43,11 @@ async function getData() {
     hexWrapper.style.width = hex.width + 'px';
     hexWrapper.style.height = hex.height + 'px';
     hexWrapper.style.cursor = 'pointer';
-    hexWrapper.dataset.col = hex.col;
-    hexWrapper.dataset.row = hex.row;
 
-    // show selected hex
+    // подсветка выбранного гекса (только если selectedHex это объект с координатами)
     if (
       selectedHex &&
+      typeof selectedHex === 'object' &&
       selectedHex.col === hex.col &&
       selectedHex.row === hex.row
     ) {
@@ -60,14 +57,12 @@ async function getData() {
 
     hexWrapper.addEventListener('click', () => onHexClick(hex));
 
-    // background tile
     const img = document.createElement('img');
     img.src = 'https://tinkr.tech' + hex.image;
     img.style.width = '100%';
     img.style.height = '100%';
     hexWrapper.appendChild(img);
 
-    // building overlay
     if (hex.building_image !== null) {
       const buildingImg = document.createElement('img');
       buildingImg.src = 'https://tinkr.tech' + hex.building_image;
@@ -79,7 +74,6 @@ async function getData() {
       hexWrapper.appendChild(buildingImg);
     }
 
-    // unit overlay
     if (hex.unit_image !== null) {
       const unitImg = document.createElement('img');
       unitImg.src = 'https://tinkr.tech' + hex.unit_image;
@@ -95,7 +89,6 @@ async function getData() {
   }
 }
 
-// first click = select, second = move
 function onHexClick(hex) {
   const playerKey = sessionStorage.getItem("player_key");
   if (!playerKey) {
@@ -103,16 +96,24 @@ function onHexClick(hex) {
     return;
   }
 
+  // если selectedHex это строка BUY_XXX — покупаем
+  if (typeof selectedHex === 'string' && selectedHex.startsWith('BUY_')) {
+    const type = selectedHex.replace('BUY_', '').toLowerCase(); // 'BUY_PEASANT' → 'peasant'
+    selectedHex = null;
+    buy(type, { col: hex.col, row: hex.row });
+    return;
+  }
+
+  // обычный режим перемещения
   if (!selectedHex) {
     selectedHex = { col: hex.col, row: hex.row };
-    console.log("Selected hex:", selectedHex);
-    getData(); 
+    getData();
   } else {
     const from = selectedHex;
     const to = { col: hex.col, row: hex.row };
     selectedHex = null;
 
-    if (from.col === to.col && from.row === to.row) { //same hex clcked
+    if (from.col === to.col && from.row === to.row) {
       getData();
       return;
     }
@@ -121,7 +122,6 @@ function onHexClick(hex) {
   }
 }
 
-// jion
 async function login() {
   const userLogin = prompt("Enter your username:");
   if (!userLogin) return;
@@ -129,14 +129,10 @@ async function login() {
   const res = await fetch(db, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "join",
-      username: userLogin
-    })
+    body: JSON.stringify({ action: "join", username: userLogin })
   });
 
   const data = await res.json();
-
   if (data.player_key) {
     sessionStorage.setItem("player_key", data.player_key);
     sessionStorage.setItem("login", userLogin);
@@ -146,7 +142,6 @@ async function login() {
   }
 }
 
-// start
 async function start() {
   const res = await fetch(db, {
     method: "POST",
@@ -162,7 +157,6 @@ async function start() {
   }
 }
 
-// move
 async function move(playerKey, from, to) {
   const res = await fetch(db, {
     method: "POST",
@@ -176,16 +170,10 @@ async function move(playerKey, from, to) {
   });
 
   const data = await res.json();
-  if (data.ok) {
-    console.log("move done:", from, "to", to);
-  } else {
-    alert(data.error ?? "move failed");
-  }
-
-  getData(); // refresh
+  if (!data.ok) alert(data.error ?? "move failed");
+  getData();
 }
 
-// end turn
 async function endTurn() {
   const playerKey = sessionStorage.getItem("player_key");
   if (!playerKey) { alert("join first!"); return; }
@@ -193,10 +181,7 @@ async function endTurn() {
   const res = await fetch(db, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "end_turn",
-      player_key: playerKey
-    })
+    body: JSON.stringify({ action: "end_turn", player_key: playerKey })
   });
 
   const data = await res.json();
@@ -204,20 +189,15 @@ async function endTurn() {
   getData();
 }
 
-// gg
 async function surrender() {
   const playerKey = sessionStorage.getItem("player_key");
   if (!playerKey) { alert("join first!"); return; }
-
   if (!confirm("surrend?")) return;
 
   const res = await fetch(db, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "surrender",
-      player_key: playerKey
-    })
+    body: JSON.stringify({ action: "surrender", player_key: playerKey })
   });
 
   const data = await res.json();
@@ -225,16 +205,24 @@ async function surrender() {
   getData();
 }
 
-//buy 
 async function buy(type, hex) {
-  const player_key = sessionStorage.getItem('player_key')
+  const player_key = sessionStorage.getItem('player_key');
+  if (!player_key) { alert("join first!"); return; }
 
-  if (!player_key) return;
-  if (currentPlayer !== userLogin) return;
+  const res = await fetch(db, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "buy",
+      player_key: player_key,
+      type: type,
+      hex: { col: hex.col, row: hex.row }
+    })
+  });
 
-  const res = fetch(db, {
-    
-  })
+  const data = await res.json();
+  if (!data.ok) alert(data.error ?? "buy failed");
+  getData();
 }
 
 getData();

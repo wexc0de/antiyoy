@@ -8,9 +8,9 @@ body {
 }
 
 #map {
-  position: relative;
-  width: 850px;
-  height: 950px;
+    position: relative;
+  width: 1000px;
+  height: 800px;
 }
 
 h2 {
@@ -61,3 +61,4 @@ button {
   font-size: 18px;
   margin: 0 0 12px 0;
 }
+
