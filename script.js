@@ -1,6 +1,6 @@
 const db = "https://tinkr.tech/sdb/denni_antiyoy/antiyoy";
 
-let selectedHex = null; // либо {col, row}, либо 'BUY_PEASANT' и т.д.
+let selectedHex = null;
 
 async function getData() {
   const response = await fetch(db);
@@ -11,7 +11,6 @@ async function getData() {
   const currentPlayer = state.current_player ?? "-";
   window._currentPlayer = currentPlayer;
 
-  // деньги лежат в объекте игрока
   const playerObj = state.players?.find(p => p.username === currentPlayer);
   const money = playerObj?.money ?? state.money ?? "-";
 
@@ -44,7 +43,6 @@ async function getData() {
     hexWrapper.style.height = hex.height + 'px';
     hexWrapper.style.cursor = 'pointer';
 
-    // подсветка выбранного гекса (только если selectedHex это объект с координатами)
     if (
       selectedHex &&
       typeof selectedHex === 'object' &&
@@ -96,15 +94,13 @@ function onHexClick(hex) {
     return;
   }
 
-  // если selectedHex это строка BUY_XXX — покупаем
   if (typeof selectedHex === 'string' && selectedHex.startsWith('BUY_')) {
-    const type = selectedHex.replace('BUY_', '').toLowerCase(); // 'BUY_PEASANT' → 'peasant'
+    const type = selectedHex.replace('BUY_', '').toLowerCase();
     selectedHex = null;
     buy(type, { col: hex.col, row: hex.row });
     return;
   }
 
-  // обычный режим перемещения
   if (!selectedHex) {
     selectedHex = { col: hex.col, row: hex.row };
     getData();
