@@ -35,6 +35,7 @@ async function getData() {
   for (const hex of state.map) {
     if (hex.type === 'impassable') continue;
 
+    // div for hex click
     const hexWrapper = document.createElement('div');
     hexWrapper.style.position = 'absolute';
     hexWrapper.style.left = hex.x + 'px';
@@ -43,6 +44,7 @@ async function getData() {
     hexWrapper.style.height = hex.height + 'px';
     hexWrapper.style.cursor = 'pointer';
 
+    // show selected hex
     if (
       selectedHex &&
       typeof selectedHex === 'object' &&
@@ -55,12 +57,14 @@ async function getData() {
 
     hexWrapper.addEventListener('click', () => onHexClick(hex));
 
+    // background tile
     const img = document.createElement('img');
     img.src = 'https://tinkr.tech' + hex.image;
     img.style.width = '100%';
     img.style.height = '100%';
     hexWrapper.appendChild(img);
-
+    
+    // building overlay
     if (hex.building_image !== null) {
       const buildingImg = document.createElement('img');
       buildingImg.src = 'https://tinkr.tech' + hex.building_image;
@@ -72,6 +76,7 @@ async function getData() {
       hexWrapper.appendChild(buildingImg);
     }
 
+    // unit overlay
     if (hex.unit_image !== null) {
       const unitImg = document.createElement('img');
       unitImg.src = 'https://tinkr.tech' + hex.unit_image;
@@ -87,6 +92,7 @@ async function getData() {
   }
 }
 
+// first click select, second move
 function onHexClick(hex) {
   const playerKey = sessionStorage.getItem("player_key");
   if (!playerKey) {
@@ -118,6 +124,7 @@ function onHexClick(hex) {
   }
 }
 
+// jion
 async function login() {
   const userLogin = prompt("Enter your username:");
   if (!userLogin) return;
@@ -138,6 +145,7 @@ async function login() {
   }
 }
 
+//start
 async function start() {
   const res = await fetch(db, {
     method: "POST",
@@ -153,6 +161,8 @@ async function start() {
   }
 }
 
+
+//move
 async function move(playerKey, from, to) {
   const res = await fetch(db, {
     method: "POST",
@@ -170,6 +180,7 @@ async function move(playerKey, from, to) {
   getData();
 }
 
+//end turn
 async function endTurn() {
   const playerKey = sessionStorage.getItem("player_key");
   if (!playerKey) { alert("join first!"); return; }
@@ -185,6 +196,7 @@ async function endTurn() {
   getData();
 }
 
+//gg
 async function surrender() {
   const playerKey = sessionStorage.getItem("player_key");
   if (!playerKey) { alert("join first!"); return; }
@@ -201,6 +213,7 @@ async function surrender() {
   getData();
 }
 
+//buy
 async function buy(type, hex) {
   const player_key = sessionStorage.getItem('player_key');
   if (!player_key) { alert("join first!"); return; }

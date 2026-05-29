@@ -50,15 +50,17 @@ h2 {
   font-weight: bold;
 }
 
-#move-hint {
-  margin: 6px 0;
-  font-size: 15px;
-  color: #aaa;
-
-}
-
 button {
   font-size: 18px;
   margin: 0 0 12px 0;
+}
+
+.buy-btn {
+  display: flex;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
 }
 
